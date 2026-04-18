@@ -1,32 +1,94 @@
-Job Application System
+# TuTu Apply - Phase 1 Scaffold
 
-Why? Everytime I apply a new job or find a new opportunities, I have to go back again to Chatgpt and prepare.
+Production-oriented monorepo scaffold for a mission-based career workflow app.
 
-It's so tiring. This project will automate the job research, company research, and prepare your job readiness. 
+## Monorepo structure
 
-It involves 2 stages of career development -> find new opportunities and be ready for it. 
+```text
+apps/
+  web/                  # Next.js App Router + Tailwind + TanStack Query
+  api/                  # FastAPI service (typed Pydantic schemas)
+packages/
+  shared/               # Shared TypeScript domain types
+workers/
+  temporal-worker/      # Temporal worker scaffold package
+supabase/
+  migrations/           # SQL schema + RLS + pgvector
+  seed/                 # seed/demo SQL
+scripts/
+  bootstrap.sh          # quick setup
+```
 
-Use cases = Job application for early career students
+## Phase 1 features implemented
 
-Feature One : Is this job for me?
+- Mobile-first app shell with tabs: **Path, Jobs, Vault, Coach, Profile**.
+- Responsive bottom nav + top progress indicator.
+- Onboarding flow with fields:
+  - target role
+  - career stage
+  - preferred industries
+  - preferred locations
+  - daily commitment
+  - resume upload
+- Backend onboarding persistence in SQLite (`apps/api/data/tutu.db`) plus mission/path initialization.
+- Seed/demo onboarding data for `demo-user` at API startup so flow is testable instantly.
+- Job Fit Evaluator MVP: jobs list + job detail + fit-score endpoint with evidence-backed matches, missing skills, and confidence.
+- Vault + Story Engine MVP: experience CRUD, story-card generation, job-targeted retrieval with audit logs, and evidence-attached application drafts.
+- Application Generator MVP: create application from saved job, select stories, generate cover letter + short answer artifacts, and view generation history/status.
+- Readiness Coach MVP: unlocked from saved/submitted applications, generates 7-day or 14-day interview+gap mission plans with progress tracking.
 
-Feature Two : Find jobs for me
+## Environment setup
 
-Feature Three : Let’s write customized cover letter for this job
+```bash
+cp apps/web/.env.example apps/web/.env.local
+cp apps/api/.env.example apps/api/.env
+cp workers/temporal-worker/.env.example workers/temporal-worker/.env
+```
 
-Feature Four : Job Update from api sources
+## Local setup
 
-Feature Five : Job readiness (interview, assessment test, knowledge and skills)
+```bash
+./scripts/bootstrap.sh
+```
 
-Layers
-layers - 1. Personal experience -> each experience of yours is unique , that's what shaped you today.
+## Start each service
 
-layer 2 - research about company, its background, its employee rating, 
+### API (FastAPI)
 
-layer 2.1 - which job, which qualifications needed, which skills needed for the job
+```bash
+cd apps/api
+source .venv/bin/activate
+uvicorn app.main:app --reload --port 8000
+```
 
-layer 3 - research about the application they’re applying for 
+### Web (Next.js)
 
-layer 4 - retriveal layer from past exp to match the company and application → output → a draft written piece 
+```bash
+pnpm dev:web
+```
 
-layer 5 - editing and refinement with AI
+Web runs on `http://localhost:3000`.
+
+### Temporal worker scaffold
+
+```bash
+pnpm dev:worker
+```
+
+## Testable demo flow
+
+1. Open `/onboarding` and submit the form (optionally upload a resume file).
+2. Open `/path` and verify Level/XP/Streak and three generated missions.
+3. Open `/jobs`, inspect fit rings, and open `/jobs/job_1` for matched evidence + missing skills.
+4. Open `/vault` to add/edit/delete experience items and manage story cards.
+5. Open `/jobs/job_1` to create an application from the saved job, select stories, generate cover letter/short-answer drafts, and inspect generation history/status.
+6. Open `/coach` to generate a 7-day or 14-day readiness plan and track mission completion progress.
+
+## Quality commands
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm format
+cd apps/api && source .venv/bin/activate && pytest -q
+```

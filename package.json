@@ -1,0 +1,20 @@
+{
+  "name": "tutu-apply",
+  "private": true,
+  "packageManager": "pnpm@9.12.3",
+  "scripts": {
+    "dev": "pnpm --filter @tutu/web dev",
+    "dev:web": "pnpm --filter @tutu/web dev",
+    "dev:api": "cd apps/api && uvicorn app.main:app --reload",
+    "dev:worker": "pnpm --filter @tutu/temporal-worker dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "format": "prettier --check .",
+    "format:write": "prettier --write .",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "prettier": "3.3.3",
+    "typescript": "5.6.3"
+  }
+}
