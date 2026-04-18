@@ -1,0 +1,13 @@
+{
+  "name": "@tutu/temporal-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "@temporalio/client": "1.11.4",
+    "@temporalio/worker": "1.11.4"
+  }
+}
